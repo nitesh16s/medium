@@ -1,0 +1,228 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'main/assets/img/favicon.ico' %}">
+    <title>Mediumish - A Medium style template by WowThemes.net</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'main/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'main/assets/css/mediumish.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Begin Nav
+================================================== -->
+    {% include 'main/nav.html' %}
+    <!-- End Nav
+================================================== -->
+
+    <!-- Begin Article
+================================================== -->
+    <div class="container">
+        <div class="row">
+
+            <!-- Begin Fixed Left Share -->
+            <div class="col-md-2 col-xs-12">
+                <div class="share">
+
+                    <ul>
+                        <li>
+                            <p>Comments</p>
+                            <a href="{% url 'comment' post.slug %}">
+                        {{ comments_count }}<br/>
+                        <i class="fa fa-comment-o" style="font-size: 20px"></i>
+                        </a>
+                        </li>
+                    </ul>
+
+                    <div class="sep"></div>
+
+                    <ul>
+                        <li>
+                            <p>Likes</p>
+                            <a id=likeCount{{post.id}} title="Total Likes">{{ likes_count }}</a><br> {% if like %}
+                            <a id=likePost{{post.id}} onclick="toggleLike({{post.id}})" title="Dislike">
+                                <i class="fa fa-heart" title="Dislike" style="font-size: 20px;"></i>
+                            </a>
+                            {% else %}
+                            <a id=likePost{{post.id}} onclick="toggleLike({{post.id}})" title="Like">
+                                <i class="fa fa-heart-o" title="Like" style="font-size: 20px;"></i>
+                            </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                    <div class="sep"></div>
+
+                    <ul>
+                        <li>
+                            {% if post in savedPosts %}
+                            <p id=savePostdata{{post.id}}>UnSave Post</p>
+                            <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Unsave Post">
+                                <i class="fa fa-bookmark" style="font-size: 20px;" title="Unsave Post"></i>
+                            </a>
+                            </a>
+                            {% else %}
+                            <p id=savePostdata{{post.id}}>Save Post</p>
+                            <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Save Post">
+                                <i class="fa fa-bookmark-o" style="font-size: 20px;" title="Unsave Post"></i>
+                            </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+            <!-- End Fixed Left Share -->
+
+            <!-- Begin Post -->
+            <div class="col-md-10 col-md-offset-2 col-xs-12" style="overflow-x: hidden;">
+                <div class="mainheading">
+
+                    <!-- Begin Top Meta -->
+                    <div class="row post-top-meta">
+                        <div class="col-md-2">
+                            <a href="{% url 'user-posts' post.author %}"><img class="author-thumb" src="{{ post.author.profile.image.url }}" alt="{{ user.username }}"></a>
+                        </div>
+                        <div class="col-md-10">
+                            <a class="link-dark" href="{% url 'user-posts' post.author %}">{{ post.author.username }}</a> {% if post.author != request.user %} {% if follows %}
+                            <a id=followUser{{post.id}} onclick="toggleFollow({{post.id}})" title="Unfollow" class="btn follow">
+                                    Unfollow
+                                </a> {% else %}
+                            <a id=followUser{{post.id}} onclick="toggleFollow({{post.id}})" title="Follow" class="btn follow">
+                                    Follow
+                                </a> {% endif %} {% endif %}
+                            <br>
+                            <span class="author-description">{{ post.author.profile.about }}</span><br>
+                            <span class="post-date">{{ post.created }}</span><span class="dot"></span>
+                        </div>
+                    </div>
+                    <!-- End Top Menta -->
+
+                    <h1 class="posttitle">{{ post.title }}</h1>
+
+                </div>
+
+                <!-- Begin Featured Image -->
+                <img class="featured-image img-fluid" src="{{STATIC_URL}}/media/{{post.image}}" alt="">
+                <!-- End Featured Image -->
+
+                <!-- Begin Post Content -->
+                <div class="post">
+                    {{ post.content|safe }}
+                </div>
+                <!-- End Post Content -->
+
+                <!-- Begin Tags -->
+                <div class="after-post-tags">
+                    <ul class="tags">
+                        <li>
+                            {% for tag in post.tags %}
+                            <a>{{ tag }}</a> {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+                <!-- End Tags -->
+
+            </div>
+            <!-- End Post -->
+
+        </div>
+    </div>
+    <!-- End Article
+================================================== -->
+
+    {% if related_posts %}
+
+    <div class="hideshare"></div>
+
+    <!-- Begin Related
+================================================== -->
+    <div class="graybg">
+        <div class="container">
+            <h1>Related Posts</h1>
+            <hr>
+            <div class="row listrecent listrelated">
+
+                {% for post in related_posts %}
+
+                <!-- begin post -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <a href="{% url 'post-detail' post.slug %}">
+                            <img class="img-fluid img-thumb" src="{{STATIC_URL}}/media/{{post.image}}" alt="">
+                        </a>
+                        <div class="card-block">
+                            <h2 class="card-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h2>
+                            <div class="metafooter">
+                                <div class="wrapfooter">
+                                    <span class="meta-footer-thumb">
+                                <a href="{% url 'user-posts' post.author %}"><img class="author-thumb" src="{{ post.author.profile.image.url }}" alt="{{ post.author }}"></a>
+                                </span>
+                                    <span class="author-meta">
+                                <span class="post-name"><a href="{% url 'user-posts' post.author %}">{{ post.author }}</a></span><br/>
+                                    <span class="post-date">{{ post.created }}</span><span class="dot"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end post -->
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    <!-- End Related Posts
+================================================== -->
+
+    {% endif %}
+
+
+    <!-- Begin Footer
+================================================== -->
+    <div class="container">
+        <div class="footer">
+            <p class="pull-left">
+                Copyright &copy; 2020 Your Website Name
+            </p>
+            <p class="pull-right">
+                Mediumish Theme by <a target="_blank" href="https://www.wowthemes.net">WowThemes.net</a>
+            </p>
+            <div class="clearfix">
+            </div>
+        </div>
+    </div>
+    <!-- End Footer
+================================================== -->
+
+
+    <!-- My JS Files -->
+    <script src="{% static 'main/assets/js/main.js' %}"></script>
+
+
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="{% static 'main/assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'main/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script src="{% static 'main/assets/js/mediumish.js' %}"></script>
+</body>
+
+</html>

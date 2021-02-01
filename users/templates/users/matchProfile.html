@@ -1,0 +1,3 @@
+{% for match in matches %}
+	<a href="{% url 'user-posts' match %}">{{ match }}</a>
+{% endfor %}

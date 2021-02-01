@@ -1,0 +1,16 @@
+.post-heading {
+	margin-left: 0;
+}
+
+.user-data {
+	text-align: center;
+	padding: 30px;
+}
+
+.user-data h5 {
+	font-weight: 500;
+}
+
+.user-data:hover {
+	background: rgba(0,0,0,0.5);
+}

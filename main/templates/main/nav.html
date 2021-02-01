@@ -1,0 +1,100 @@
+{% load static %}
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-white fixed-top mediumnavigation">
+
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="container">
+
+        <!-- Begin Logo -->
+        <a class="navbar-brand" href="{% url 'index' %}">
+        <img src="{% static 'main/assets/img/logo.png' %}" alt="logo">
+        </a>
+        <!-- End Logo -->
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+
+            {% if user.is_authenticated %}
+
+                <!-- Begin Menu -->
+                <ul class="navbar-nav ml-auto">
+<!--                     <li class="nav-item">
+                        <a class="nav-link" href="">Recommended</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'posts' %}">Post</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post-create' %}">Write</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="nav-link" data-toggle="dropdown" href=""><i class="fa fa-bell">{{messages|length}}</i></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for message in messages %}
+                                    <p>{{message}}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="nav-link" data-toggle="dropdown" href="">{{ request.user }}</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'profile' request.user %}">Profile</a>
+                                <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
+                                <a class="dropdown-item" href="{% url 'savedPosts' request.user %}">Saved</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <!-- End Menu -->
+
+            {% else %}
+
+            <!-- Begin Menu -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="">Recommended</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'posts' %}">Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">Signup</a>
+                </li>
+            </ul>
+            <!-- End Menu -->
+
+            {% endif %}
+
+            <!-- Begin Search -->
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="get">
+                <input name="q" class="form-control mr-sm-2" type="text" placeholder="Search">
+                <span class="search-icon"><svg class="svgIcon-use" width="25" height="25" viewbox="0 0 25 25"><path d="M20.067 18.933l-4.157-4.157a6 6 0 1 0-.884.884l4.157 4.157a.624.624 0 1 0 .884-.884zM6.5 11c0-2.62 2.13-4.75 4.75-4.75S16 8.38 16 11s-2.13 4.75-4.75 4.75S6.5 13.62 6.5 11z"></path></svg></span>
+            </form>
+            <!-- End Search -->
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

@@ -1,0 +1,157 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="{% static 'main/assets/img/favicon.ico' %}">
+<title>Mediumish - A Medium style template by WowThemes.net</title>
+<!-- Bootstrap core CSS -->
+<link href="{% static 'main/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="{% static 'main/assets/css/mediumish.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Begin Nav
+================================================== -->
+{% include 'main/nav.html' %}
+<!-- End Nav
+================================================== -->
+
+<!-- Begin Top Author Page
+================================================== -->
+<div class="container">
+	<img style="width: 100%;" src="{{ user.profile.background.url }}">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 col-md-offset-2">
+			<div class="mainheading">
+				<div class="row post-top-meta authorpage">
+					<div class="col-md-10 col-xs-12">
+						{% if user.profile.id %}
+							<h1>{{ user.profile.first_name }} {{ user.profile.last_name }}</h1>
+							<span class="author-description">{{ user.profile.about }}</span>
+							<div class="sociallinks">
+								<a href=""><i class="fa fa-facebook"></i></a> <span class="dot"></span>
+								<a href=""><i class="fa fa-google-plus"></i></a>
+							</div>
+
+							<div class="btn-group">
+								<a href="{% url 'followers' request.user.username %}" class="btn follow" style="padding: 10px 20px; color: #1C9963; font-size: 0.9rem">
+									{{ followers.count }} Follower{{ followers|pluralize }}
+								</a>
+								<a style="padding: 10px;" class="btn follow dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only"></span></a>
+								<div class="dropdown-menu">
+									{% for follower in followers %}
+									    <a class="dropdown-item">{{ follower.follower }}</a>
+									{% endfor %}
+								</div>
+							</div>
+
+							<div class="btn-group">
+								<a href="{% url 'followings' request.user.username %}" class="btn follow" style="padding: 10px 20px; color: #1C9963; font-size: 0.9rem">
+									{{ followings.count }} Following{{ followings|pluralize }}
+								</a>
+								<a style="padding: 10px;" class="btn follow dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only"></span></a>
+								<div class="dropdown-menu">
+									{% for following in followings %}
+									    <p class="dropdown-item">{{ following.following }} 
+									    	<a href="{% url 'unfollow' following.following %}" style="margin-left: 10px; color: #1C9963">
+										    	Unfollow
+										    </a>
+										</p>
+									{% endfor %}
+								</div>
+							</div>
+
+							<a href="{% url 'update-profile' user.profile.slug %}" class="btn follow">Update Profile</a>
+						{% else %}
+							<a href="{% url 'create-profile' %}" class="btn follow">Complete Profile</a>
+						{% endif %}
+					</div>
+					<div class="col-md-2 col-xs-12">
+						<img class="author-thumb" src="{{ user.profile.image.url }}" alt="{{ user.username }}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- End Top Author Meta
+================================================== -->
+
+<!-- Begin Author Posts
+================================================== -->
+<div class="graybg authorpage">
+	<div class="container">
+		<div class="listrecent listrelated">
+
+			{% for post in posts %}
+				<!-- begin post -->
+				<div class="authorpostbox">
+					<div class="card">
+						<a href="{% url 'post-detail' post.slug %}">
+						<img class="img-fluid img-thumb" src="{{STATIC_URL}}/media/{{post.image}}" alt="">
+						</a>
+						<div class="card-block">
+							<h2 class="card-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h2>
+							<h4 class="card-text">{{ post.get_tags_display }}</h4>
+			            	<div class="metafooter">
+								<div class="wrapfooter">
+									<span class="meta-footer-thumb">
+									<a href="author.html"><img class="author-thumb" src="{{ user.profile.image.url }}" alt="{{ user.username }}"></a>
+									</span>
+									<span class="author-meta">
+									<span class="post-name"><a href="author.html">{{ user.username }}</a></span><br/>
+									<span class="post-date">{{ post.created }}</span><span class="dot"></span><span class="post-read">6 min read</span>
+									<a href="{% url 'post-update' post.slug %}" class="btn follow">Edit</a>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end post -->
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!-- End Author Posts
+================================================== -->
+
+
+<!-- Begin Footer
+================================================== -->
+<div class="container">
+	<div class="footer">
+	  <p class="pull-left">
+	    Copyright &copy; 2017 Your Website Name
+	  </p>
+	  <p class="pull-right">
+	    Mediumish Theme by <a href="https://www.wowthemes.net">WowThemes.net</a>
+	  </p>
+	<div class="clearfix"></div>
+	</div>
+</div>
+<!-- End Footer
+================================================== -->
+
+
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="{% static 'main/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'main/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+</html>

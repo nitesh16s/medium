@@ -1,0 +1,97 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="{% static 'main/assets/img/favicon.ico' %}">
+<title>Mediumish - A Medium style template by WowThemes.net</title>
+<!-- Bootstrap core CSS -->
+<link href="{% static 'main/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="{% static 'main/assets/css/mediumish.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Begin Nav
+================================================== -->
+{% include 'main/nav.html' %}
+<!-- End Nav
+================================================== -->
+
+
+<!-- Begin Comments -->
+<div class="graybg" style="margin-top: -40px;">
+    <div class="container">
+        <div class="listrecent listrelated">
+
+            <h4 style="word-wrap: break-word;">{{ comment }}</h4>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ reply_form|crispy }}
+                <button class="btn btn-info">Add</button>
+            </form>
+
+            {% for reply in replies %}
+                <!-- begin post -->
+                <div class="authorpostbox">
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="card-text article-post">{{ reply.content }}</h4>
+                            <div class="metafooter">
+                                <div class="wrapfooter">
+                                    <span class="meta-footer-thumb">
+                                    <a href="{% url 'user-posts' reply.author %}"><img class="author-thumb" src="{{ reply.author.profile.image.url }}" alt="{{ reply.author }}"></a>
+                                    </span>
+                                    <span class="author-meta">
+                                    <span class="post-name"><a href="{% url 'user-posts' reply.author %}">{{ reply.author }}</a></span><br/>
+                                    <span class="post-date">{{ reply.created }}</span><span class="dot"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end post -->
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- End Comments -->
+
+
+<!-- Begin Footer
+================================================== -->
+<div class="container">
+    <div class="footer">
+        <p class="pull-left">
+             Copyright &copy; 2017 Your Website Name
+        </p>
+        <p class="pull-right">
+             Mediumish Theme by <a target="_blank" href="https://www.wowthemes.net">WowThemes.net</a>
+        </p>
+        <div class="clearfix">
+        </div>
+    </div>
+</div>
+<!-- End Footer
+================================================== -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="{% static 'main/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'main/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+</html>

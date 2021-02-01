@@ -1,0 +1,148 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="{% static 'main/assets/img/favicon.ico' %}">
+<title>Mediumish - A Medium style template by WowThemes.net</title>
+<!-- Bootstrap core CSS -->
+<link href="{% static 'main/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="{% static 'main/assets/css/mediumish.css' %}" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- Begin Nav
+================================================== -->
+{% include 'main/nav.html' %}
+<!-- End Nav
+================================================== -->
+
+{% if user.is_authenticated %}
+
+<div class="container">
+  <!-- Begin Featured
+  ================================================== -->
+  <section class="featured-posts">
+  <div class="section-title">
+    <h2><span>Based on your followings</span></h2>
+  </div>
+  <div class="card-columns listfeaturedtag">
+
+    {% for posts in following_posts %}
+
+      {% for post in posts %}
+
+      <!-- begin post -->
+      <div class="card">
+        <div class="row">
+          <div class="col-md-5 wrapthumbnail">
+            <a href="{% url 'post-detail' post.slug %}">
+              <div class="thumbnail" style="background-image:url({{STATIC_URL}}/media/{{post.image}});">
+              </div>
+            </a>
+          </div>
+          <div class="col-md-7">
+            <div class="card-block">
+              <h2 class="card-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h2>
+              <h4 class="card-text">{{ post.content }}</h4>
+
+              <!-- Begin Tags -->
+              <div class="after-post-tags">
+                  <ul class="tags">
+                      <li>
+                          {% for tag in post.tags %}
+                              <i><small><a>{{ tag }}</a></small></i>
+                          {% endfor %}
+                      </li>
+                  </ul>
+              </div>
+              <!-- End Tags -->
+              
+              <div class="metafooter">
+                <div class="wrapfooter">
+                  <span class="meta-footer-thumb">
+                  <a href="{% url 'user-posts' post.author %}"><img class="author-thumb" src="{{ post.author.profile.image.url }}" alt="{{ user.username }}"></a>
+                  </span>
+                  <span class="author-meta">
+                  <span class="post-name" title="Check more posts from {{post.author}}"><a href="{% url 'user-posts' post.author %}">{{ post.author }}</a></span><br/>
+                  <span class="post-date">{{ post.created }}</span><span class="dot"></span>
+                  </span>
+
+                  {% if post in savedPosts %}
+                      <span class="post-read-more">
+                          <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Unsave Post">
+                            <i class="fa fa-bookmark" style="font-size: 20px;" title="Unsave Post"></i>
+                          </a>
+                      </span>
+                  {% else %}
+                      <span class="post-read-more">
+                          <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Save Post">
+                            <i class="fa fa-bookmark-o" style="font-size: 20px;" title="Save Post"></i>
+                          </a>
+                      </span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end post -->
+
+      {% endfor %}
+      
+    {% endfor %}
+
+  </div>
+  </section>
+  <!-- End Featured
+  ================================================== -->
+
+  <!-- Begin Footer
+  ================================================== -->
+  <div class="footer">
+    <p class="pull-left">
+       Copyright &copy; 2020 Your Website Name
+    </p>
+    <p class="pull-right">
+       Mediumish Theme by <a target="_blank" href="">WowThemes.net</a>
+    </p>
+    <div class="clearfix">
+    </div>
+  </div>
+  <!-- End Footer
+  ================================================== -->
+
+</div>
+<!-- /.container -->
+
+{% else %}
+    <div class="container">
+        <a href="{% url 'account_login' %}">Login</a>
+        <a href="{% url 'account_signup' %}">Signup</a>
+    </div>
+{% endif %}
+
+
+<!-- My JS Files -->
+<script src="{% static 'main/assets/js/main.js' %}"></script>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="{% static 'main/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'main/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+<script src="{% static 'main/assets/js/mediumish.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="{% static 'main/assets/img/favicon.ico' %}">
+<title>Mediumish - A Medium style template by WowThemes.net</title>
+<!-- Bootstrap core CSS -->
+<link href="{% static 'main/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="{% static 'main/assets/css/mediumish.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Begin Nav
+================================================== -->
+{% include 'main/nav.html' %}
+<!-- End Nav
+================================================== -->
+
+<!-- Begin Top Author Page
+================================================== -->
+<div class="container">
+	<img style="width: 100%;" src="{{ user.profile.background.url }}">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 col-md-offset-2">
+			<div class="mainheading">
+				<div class="row post-top-meta authorpage">
+					<div class="col-md-10 col-xs-12">
+						<h1>{{ user.profile.first_name }} {{ user.profile.last_name }}</h1>
+						<span class="author-description">{{ user.profile.about }}</span>
+					</div>
+					<div class="col-md-2 col-xs-12">
+						<img class="author-thumb" src="{{ user.profile.image.url }}" alt="{{ user.username }}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Top Author Meta
+================================================== -->
+
+
+<!-- FORM -->
+<div class="container">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          {{ form.first_name|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ form.last_name|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ form.is_male|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ form.is_female|as_crispy_field }}
+        </div>
+      </div>
+      {{ form.about|as_crispy_field }}
+
+    <p style="border: 1px solid #eee;">{{ form.image|as_crispy_field }}</p>
+    <p style="border: 1px solid #eee;">{{ form.background|as_crispy_field }}</p>
+    <button class="btn btn-outline-success btn-rounded waves-effect">Update</button>
+  </form>
+</div>
+<!-- END FORM -->
+
+
+<!-- Begin Footer
+================================================== -->
+<div class="container">
+	<div class="footer">
+	  <p class="pull-left">
+	    Copyright &copy; 2017 Your Website Name
+	  </p>
+	  <p class="pull-right">
+	    Mediumish Theme by <a target="_blank" href="https://www.wowthemes.net">WowThemes.net</a>
+	  </p>
+	<div class="clearfix"></div>
+	</div>
+</div>
+<!-- End Footer
+================================================== -->
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="{% static 'main/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'main/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+</html>

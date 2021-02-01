@@ -1,0 +1,22 @@
+.article-content {
+  white-space: pre-line;
+}
+
+.postform {
+	width: 80%;
+	margin: auto;
+	padding: 30px;
+	background: #fff;
+	margin-bottom: 50px;
+}
+
+@media only screen and (max-width: 800px) {
+	.postform {
+		width: 100%;
+		margin: auto;
+		padding: 30px;
+		background: #fff;
+		margin-bottom: 50px;
+	}
+
+}
