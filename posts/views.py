@@ -88,6 +88,11 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         except Post.DoesNotExist:
             return redirect('404')
 
+        saved = SavePost.objects.filter(author=request.user)
+        savedPostsIds = []
+        for s in saved:
+            savedPostsIds.append(s.post_id)        
+
         if Connections.objects.filter(follower__username=request.user, following=post.author).exists():
             follows = True
         else:
@@ -102,7 +107,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
         comments_count = Comment.objects.filter(post=post).count()
 
-        return render(request, 'posts/post_detail.html', {'post': post, 'follows': follows, 'like': like, 'likes_count': likes_count, 'comments_count': comments_count, })
+        return render(request, 'posts/post_detail.html', {'post': post, 'follows': follows, 'like': like, 'likes_count': likes_count, 'comments_count': comments_count, 'savedPosts': savedPostsIds})
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

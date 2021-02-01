@@ -67,7 +67,7 @@
 
                     <ul>
                         <li>
-                            {% if post in savedPosts %}
+                            {% if post.id in savedPosts %}
                             <p id=savePostdata{{post.id}}>UnSave Post</p>
                             <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Unsave Post">
                                 <i class="fa fa-bookmark" style="font-size: 20px;" title="Unsave Post"></i>
