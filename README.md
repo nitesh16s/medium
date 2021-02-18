@@ -15,3 +15,4 @@
 	--python3 manage.py migrate
 	--python3 manage.py runserver
 
+https://github.com/nitesh16s/medium/blob/master/1.png
