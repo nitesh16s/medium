@@ -39,7 +39,7 @@
             </div>
             <div class="card-columns listfeaturedtag">
 
-                {% for posts in following_posts %} {% for post in posts %}
+                {% for post in following_posts %}
 
                 <!-- begin post -->
                 <div class="card">
@@ -52,8 +52,9 @@
                         </div>
                         <div class="col-md-7">
                             <div class="card-block">
-                                <h2 class="card-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h2>
-                                <h4 class="card-text">{{ post.content }}</h4>
+                                <h2 class="card-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a>
+                                </h2>
+                                <!-- <h4 class="card-text">{{ post.content }}</h4> -->
 
                                 <!-- Begin Tags -->
                                 <div class="after-post-tags">
@@ -69,24 +70,32 @@
                                 <div class="metafooter">
                                     <div class="wrapfooter">
                                         <span class="meta-footer-thumb">
-                  <a href="{% url 'user-posts' post.author %}"><img class="author-thumb" src="{{ post.author.profile.image.url }}" alt="{{ user.username }}"></a>
-                  </span>
+                                            <a href="{% url 'user-posts' post.author %}"><img class="author-thumb"
+                                                    src="{{ post.author.profile.image.url }}"
+                                                    alt="{{ user.username }}"></a>
+                                        </span>
                                         <span class="author-meta">
-                  <span class="post-name" title="Check more posts from {{post.author}}"><a href="{% url 'user-posts' post.author %}">{{ post.author }}</a></span><br/>
+                                            <span class="post-name" title="Check more posts from {{post.author}}">
+                                                <a href="{% url 'user-posts' post.author %}">{{ post.author }}
+                                                </a>
+                                            </span><br />
                                         <span class="post-date">{{ post.created }}</span><span class="dot"></span>
                                         </span>
-
-                                        {% if post.id in savedPosts %}
+                                        {% for saved in saved_posts %} {% if saved == post.id %}
                                         <span class="post-read-more">
-                          <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Unsave Post">
-                            <i class="fa fa-bookmark" style="font-size: 20px;" title="Unsave Post"></i>
-                          </a>
-                      </span> {% else %}
+                                            <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})"
+                                                title="Unsave Post">
+                                                <i class="fa fa-bookmark" style="font-size: 20px;"
+                                                    title="Unsave Post"></i>
+                                            </a>
+                                        </span> {% else %}
                                         <span class="post-read-more">
-                          <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})" title="Save Post">
-                            <i class="fa fa-bookmark-o" style="font-size: 20px;" title="Save Post"></i>
-                          </a>
-                      </span> {% endif %}
+                                            <a id=savePost{{post.id}} onclick="toggleSave({{post.id}})"
+                                                title="Save Post">
+                                                <i class="fa fa-bookmark-o" style="font-size: 20px;"
+                                                    title="Save Post"></i>
+                                            </a>
+                                        </span> {% endif %}{% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +104,7 @@
                 </div>
                 <!-- end post -->
 
-                {% endfor %} {% endfor %}
+                {% endfor %}
 
             </div>
         </section>

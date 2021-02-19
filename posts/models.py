@@ -3,9 +3,9 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.text import slugify
-from multiselectfield import MultiSelectField
 from ckeditor_uploader.fields import RichTextUploadingField
 from PIL import Image
+from mptt.models import MPTTModel, TreeForeignKey
 
 # CATEGORY_CHOICE = (
 #     ('Art', 'Art'),
@@ -110,3 +110,13 @@ class Like(models.Model):
 
     def __str__(self):
         return '{} liked by {}'.format(self.post, self.user)
+
+
+class PostComment(MPTTModel):
+    name = models.CharField(max_length=255, unique=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE,
+                            null=True, blank=True, related_name='children')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']

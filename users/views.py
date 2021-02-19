@@ -18,17 +18,26 @@ from posts.models import Post
 
 
 class UserPostListView(ListView):
+    template_name = 'users/user_posts.html'
+    context_object_name = 'user_posts'
 
-    def get(self, request, *args, **kwargs):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        posts = Post.objects.all().filter(author=user)
-        return render(request, 'users/user_posts.html', {'posts':posts, 'user':user})
+    def get_queryset(self):
+        user_posts = Post.objects.select_related('author__profile').filter(
+            author=self.request.user).order_by('-id')
+        return user_posts
+
+    # def get(self, request, *args, **kwargs):
+    #     user = get_object_or_404(User, username=self.kwargs.get('username'))
+    #     posts = Post.objects.select_related(
+    #         'author__profile').all().filter(author=user)
+    #     return render(request, 'users/user_posts.html', {'posts': posts, 'user': user})
 
 
 @login_required
 def savedPosts(request, username):
     savedPosts = []
-    ids = list(SavePost.objects.filter(author=request.user).order_by('-post_id'))
+    ids = list(SavePost.objects.filter(
+        author=request.user).order_by('-post_id'))
     for id in ids:
         savedPosts.append(Post.objects.get(id=str(id)))
     return render(request, 'users/savedPosts.html', {'savedPosts': savedPosts})
@@ -42,19 +51,20 @@ def profile(request, username):
     return render(request, 'users/profile.html', {'posts': posts, 'followers': followers, 'followings': followings, 'followings_count': followings.count})
 
 
-
 class ProfileCreateView(LoginRequiredMixin, CreateView):
-	model = Profile
-	fields = ['first_name', 'last_name', 'is_male', 'is_female', 'about', 'image', 'background']
+    model = Profile
+    fields = ['first_name', 'last_name', 'is_male',
+              'is_female', 'about', 'image', 'background']
 
-	def form_valid(self, form):
-		form.instance.author = self.request.user
-		return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Profile
-    fields = ['first_name', 'last_name', 'is_male', 'is_female', 'about', 'image', 'background']
+    fields = ['first_name', 'last_name', 'is_male',
+              'is_female', 'about', 'image', 'background']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -95,20 +105,20 @@ class SavePostView(APIView):
         data = {
             'saved': saved,
             'img': img,
-            'p':p
+            'p': p
         }
 
         return Response(data)
 
 
 def followers(request, username):
-	followers = Connections.objects.all().filter(following=request.user)
-	return render(request, 'users/followers.html', {'followers':followers})
+    followers = Connections.objects.all().filter(following=request.user)
+    return render(request, 'users/followers.html', {'followers': followers})
 
 
 def followings(request, username):
-	followings = Connections.objects.all().filter(follower=request.user)
-	return render(request, 'users/followings.html', {'followings':followings})
+    followings = Connections.objects.all().filter(follower=request.user)
+    return render(request, 'users/followings.html', {'followings': followings})
 
 
 class UnFollowView(APIView):
@@ -120,7 +130,8 @@ class UnFollowView(APIView):
         following = User.objects.get(id=pk)
         follower = self.request.user
 
-        connection = Connections.objects.get(follower=follower, following=following)
+        connection = Connections.objects.get(
+            follower=follower, following=following)
 
         connection.delete()
 

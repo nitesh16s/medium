@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'multiselectfield',
     'rest_framework',
-
+    'notifications',
     'debug_toolbar',
 
     'main',
@@ -227,8 +227,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 2
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 100
 
+
 def show_toolbar(request):
     return True
+
+
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
 }

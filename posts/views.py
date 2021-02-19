@@ -1,5 +1,7 @@
+from django.contrib.auth import models
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
+from django.views.generic.base import View
 from .models import Category, Post, Comment, Reply, Like
 from .forms import PostForm, CommentForm, ReplyForm, CategoryForm
 from django.contrib.auth.models import User
@@ -20,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from users.models import Connections, SavePost
 
 
+@login_required
 def index(request):
     posts = Post.objects.select_related(
         'author__profile').filter().order_by('-created')
@@ -35,18 +38,33 @@ def apiPosts(request):
 
 
 class PostListView(LoginRequiredMixin, ListView):
+    '''
+    List all posts of users which are followed by request user.
+    '''
+    model = Post
+    template_name = 'posts/posts.html'
 
-    def get(self, request):
-        following_posts = []
-        followings = list(Connections.objects.filter(follower=request.user))
-        for following in followings:
-            following_posts.append(Post.objects.select_related('author__profile').filter(
-                author=(following.following_id)))
-        saved = SavePost.objects.filter(author=request.user)
-        savedPostsIds = []
-        for post in saved:
-            savedPostsIds.append(post.post_id)
-        return render(request, 'posts/posts.html', {'following_posts': following_posts, 'savedPosts': savedPostsIds})
+    def get_followings(self):
+        followings = Connections.objects.filter(
+            follower_id=self.request.user.id).values_list('following_id')
+        return followings
+
+    def get_following_posts(self):
+        followings = self.get_followings()
+        posts = Post.objects.select_related(
+            'author__profile').filter(author__in=followings)
+        return posts
+
+    def get_saved_posts(self):
+        saved = SavePost.objects.filter(
+            author=self.request.user).values_list('post_id')
+        return saved
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['following_posts'] = self.get_following_posts()
+        context_data['saved_posts'] = self.get_saved_posts()
+        return context_data
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -80,25 +98,26 @@ class PostCreateView(LoginRequiredMixin, CreateView):
             return redirect('post-create')
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            post = Post.objects.get(slug=kwargs['slug'])
+            post = Post.objects.select_related(
+                'author__profile').get(slug=kwargs['slug'])
         except Post.DoesNotExist:
             return redirect('404')
 
-        saved = SavePost.objects.filter(author=request.user)
+        saved = SavePost.objects.filter(author=self.request.user)
         savedPostsIds = []
         for s in saved:
-            savedPostsIds.append(s.post_id)        
+            savedPostsIds.append(s.post_id)
 
-        if Connections.objects.filter(follower__username=request.user, following=post.author).exists():
+        if Connections.objects.filter(follower__username=self.request.user, following=post.author).exists():
             follows = True
         else:
             follows = False
 
-        if Like.objects.filter(user=request.user, post=post).exists():
+        if Like.objects.filter(user=self.request.user, post=post).exists():
             like = True
         else:
             like = False
@@ -107,12 +126,16 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
         comments_count = Comment.objects.filter(post=post).count()
 
-        return render(request, 'posts/post_detail.html', {'post': post, 'follows': follows, 'like': like, 'likes_count': likes_count, 'comments_count': comments_count, 'savedPosts': savedPostsIds})
+        context = {'post': post, 'follows': follows, 'like': like, 'likes_count': likes_count,
+                   'comments_count': comments_count, 'savedPosts': savedPostsIds}
+
+        return render(request, 'posts/post_detail.html', context)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'image', 'content', 'tags']
+    fields = ['title', 'image', 'content', 'categories']
+    template_name = 'posts/update_form.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
